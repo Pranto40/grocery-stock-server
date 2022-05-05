@@ -22,7 +22,7 @@ async function run () {
         app.get('/products', async (req, res) => {
             const quary= {}
             const cursor = productCollection.find(quary)
-            const products = await cursor.toArray()
+            const products = await cursor.limit(6).toArray()
             res.send(products)
         });
 
