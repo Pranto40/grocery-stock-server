@@ -19,7 +19,12 @@ async function run () {
         await client.connect();
         const productCollection = client.db("groceryStock").collection("product");
 
+        // itemsCollection
         const itemsCollection = client.db("groceryStock").collection("items");
+
+        // blogs
+        const blogsCollection = client.db("groceryStock").collection("blogs");
+
 
         console.log('db connected');
 
@@ -45,6 +50,14 @@ async function run () {
             const result = await productCollection.insertOne(newProduct);
             res.send(result)
         });
+        
+        // DELETE
+        app.delete('/product/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        });
 
         // items Collection api
         app.post('/item', async (req, res) => {
@@ -65,12 +78,12 @@ async function run () {
             res.send(result);
         });
 
-        // DELETE
-        app.delete('/product/:id', async(req, res) => {
-            const id = req.params.id;
-            const query = {_id: ObjectId(id)};
-            const result = await productCollection.deleteOne(query);
-            res.send(result);
+        // blogs Collection api
+        app.get('/blogs', async (req, res) => {
+            const quary= {}
+            const cursor = blogsCollection.find(quary)
+            const blogs = await cursor.toArray()
+            res.send(blogs)
         });
         
     }
