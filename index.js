@@ -18,6 +18,9 @@ async function run () {
     try{
         await client.connect();
         const productCollection = client.db("groceryStock").collection("product");
+
+        const itemsCollection = client.db("groceryStock").collection("items");
+
         console.log('db connected');
 
         // GET
@@ -41,6 +44,25 @@ async function run () {
             const newProduct = req.body;
             const result = await productCollection.insertOne(newProduct);
             res.send(result)
+        });
+
+        // items Collection api
+        app.post('/item', async (req, res) => {
+            const item = req.body;
+            const result = await itemsCollection.insertOne(item);
+            res.send(result)
+        });
+        app.get('/item', async (req, res) => {
+            const quary= {}
+            const cursor = itemsCollection.find(quary)
+            const products = await cursor.toArray()
+            res.send(products)
+        });
+        app.delete('/item/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await itemsCollection.deleteOne(query);
+            res.send(result);
         });
 
         // DELETE
