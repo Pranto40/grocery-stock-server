@@ -50,6 +50,21 @@ async function run () {
             const result = await productCollection.insertOne(newProduct);
             res.send(result)
         });
+
+        // PUT
+        app.put('/product/:id', async(req, res) => {
+            const id = req.params.id;
+            const updateQuentity = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updatedDoc = {
+                $set: {
+                    quantity: updateQuentity.quantity
+                }
+            };
+            const result = await productCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
         
         // DELETE
         app.delete('/product/:id', async(req, res) => {
@@ -66,7 +81,8 @@ async function run () {
             res.send(result)
         });
         app.get('/item', async (req, res) => {
-            const quary= {}
+            const email = req.query.email;
+            const quary= {email: email};
             const cursor = itemsCollection.find(quary)
             const products = await cursor.toArray()
             res.send(products)
